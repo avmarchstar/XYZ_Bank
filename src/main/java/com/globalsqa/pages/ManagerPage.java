@@ -1,6 +1,6 @@
 package com.globalsqa.pages;
 
-import helpers.BasePage;
+import com.globalsqa.pages.helpers.BasePage;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;

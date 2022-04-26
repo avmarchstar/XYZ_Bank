@@ -1,6 +1,6 @@
 package com.globalsqa.pages;
 
-import helpers.BasePage;
+import com.globalsqa.pages.helpers.BasePage;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -24,12 +24,12 @@ public class HomePage extends BasePage {
         return waitWebElement(customerLoginBtn);
     }
 
-    public void setSelector(String customerName) {
-        waitWebElement(selector).sendKeys(customerName);
-    }
-
     public WebElement getSelector() {
         return selector;
+    }
+
+    public void setSelector(String customerName) {
+        waitWebElement(selector).sendKeys(customerName);
     }
 
     public WebElement getLoginBtn() {

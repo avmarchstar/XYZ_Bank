@@ -1,12 +1,17 @@
 package com.globalsqa.pages;
 
-import helpers.BasePage;
+import com.globalsqa.pages.helpers.BasePage;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.Select;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class AccountPage extends BasePage {
 
@@ -28,8 +33,13 @@ public class AccountPage extends BasePage {
     protected WebElement moneySubmitBtn;
     @FindBy(css = "[type='datetime-local']")
     protected List<WebElement> transactionDate;
-    @FindBy(css = "tr[class='ng-scope']")
+    //    @FindBy(css = "tr[class='ng-scope']")
+    @FindBy(css = "tr[id^='anchor']")
     protected List<WebElement> transactions;
+    @FindBy(css = "[ng-show='message']")
+    protected WebElement withdrawAboveMsg;
+    @FindBy(css = "[ng-show='right']")
+    protected WebElement paginationRightBtn;
 
     protected String balance;
     protected String currencyName;
@@ -83,13 +93,45 @@ public class AccountPage extends BasePage {
         return waitWebElement(transactionDate.get(0));
     }
 
-    public WebElement getFirstTransaction() {
-        return waitWebElement(transactions.get(0));
+    public boolean firstTransactionDataContains(String param) {
+        if (!transactionDate.isEmpty() && !transactions.isEmpty()) {
+            return waitWebElement(transactions.get(0)).getText().contains(param);
+        }
+        return false;
     }
 
-    public WebElement getLastTransaction() {
-        return waitWebElement(transactions.get(1));
+    public boolean lastTransactionDataContains(String param) {
+        if (!transactions.isEmpty() && paginationRightBtn.isDisplayed()) {
+            do {
+                paginationRightBtn.click();
+            } while (transactions.get(transactions.size() - 1).getText().isEmpty());
+            return transactions.get(transactions.size() - 1).getText().contains(param);
+        }
+        return false;
+    }
+
+    public String dateTodayForDatePicker() {
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyy");
+        return sdf.format(calendar.getTime());
+    }
+
+    public String dateTodayForTest() {
+        return new SimpleDateFormat("MMM dd, yyyy", Locale.ENGLISH)
+                .format(Calendar.getInstance().getTime());
+    }
+
+    public boolean checkWithdrawAboveMsg(Long balance, String moneyForTest) {
+
+        String regexNumber = "[^\\D]";
+        Pattern p = Pattern.compile(regexNumber);
+        Matcher m = p.matcher(moneyForTest);
+        if (m.matches() && balance < Long.parseLong(moneyForTest)) {
+            return withdrawAboveMsg.getText().equals(MSG_WHISDRAW_ABOVE);
+        }
+        return true;
     }
 
 
 }
+

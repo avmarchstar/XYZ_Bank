@@ -2,8 +2,8 @@ package com.globalsqa.tests.positive;
 
 import com.globalsqa.pages.AccountPage;
 import com.globalsqa.pages.HomePage;
-import helpers.BaseTest;
-import helpers.Dp;
+import com.globalsqa.pages.helpers.BaseTest;
+import com.globalsqa.pages.helpers.Dp;
 import org.openqa.selenium.Keys;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -15,7 +15,7 @@ public class AccountTest extends BaseTest {
     HomePage homePage;
     AccountPage accountPage;
 
-    @Test(dataProvider = "customerMoneyData", dataProviderClass = Dp.class)
+    @Test(dataProvider = "customerMoneyDataPositive", dataProviderClass = Dp.class)
     public void workAccountTest(String customerName, String accountNumber, String moneyForTest, String currencyName) {
 
         homePage = new HomePage(driver);
@@ -50,18 +50,19 @@ public class AccountTest extends BaseTest {
         accountPage = homePage.getAccountPage(driver, customerName);
         accountPage.getSelect().selectByVisibleText(accountNumber);
         accountPage.getTransactionsBtn().click();
-        accountPage.getTransactionDateFrom().sendKeys(accountPage.dateForTest());
+        accountPage.getTransactionDateFrom().sendKeys(accountPage.dateTodayForDatePicker());
 
 //        Check operation's data: amount of money and type of operation
-        Assert.assertTrue(accountPage.getFirstTransaction().getText().contains(AccountPage.OPER_TYPE_CREDIT));
-        Assert.assertTrue(accountPage.getFirstTransaction().getText().contains(moneyForTest));
+        Assert.assertTrue(accountPage.firstTransactionDataContains(AccountPage.OPER_TYPE_CREDIT));
+        Assert.assertTrue(accountPage.firstTransactionDataContains(moneyForTest));
+        Assert.assertTrue(accountPage.firstTransactionDataContains(accountPage.dateTodayForTest()));
 
-        Assert.assertTrue(accountPage.getLastTransaction().getText().contains(AccountPage.OPER_TYPE_DEBIT));
-        Assert.assertTrue(accountPage.getLastTransaction().getText().contains(moneyForTest));
+        Assert.assertTrue(accountPage.lastTransactionDataContains(AccountPage.OPER_TYPE_DEBIT));
+        Assert.assertTrue(accountPage.lastTransactionDataContains(moneyForTest));
+        Assert.assertTrue(accountPage.lastTransactionDataContains(accountPage.dateTodayForTest()));
 
 //          Check logout button
         accountPage.getLogoutBtn().click();
-
         Assert.assertTrue(homePage.getSelector().isDisplayed());
 
 

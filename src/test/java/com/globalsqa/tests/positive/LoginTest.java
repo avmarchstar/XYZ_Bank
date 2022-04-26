@@ -3,7 +3,7 @@ package com.globalsqa.tests.positive;
 import com.globalsqa.pages.AccountPage;
 import com.globalsqa.pages.HomePage;
 import com.globalsqa.pages.ManagerPage;
-import helpers.BaseTest;
+import com.globalsqa.pages.helpers.BaseTest;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
